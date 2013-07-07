@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}FoodPlanner by Jorgen Schäfer{% endblock %}
+
+{% block content %}
+<div class="hero-unit">
+  <h1>FoodPlanner</h1>
+  <p>Gerichte planen, Rezepte teilen, gut Essen.</p>
+  <p>Dies ist die private Rezepteseite von Jorgen Schäfer.</p>
+  <p>
+    <a href="{% url recipe-random %}" class="btn btn-primary btn-large">
+      Zufallsrezept &raquo;
+    </a>
+  </p>
+</div>
+
+<div class="row">
+  {% for recipe in recipe_list %}
+  <div class="span4">
+    <a href="{{recipe.get_absolute_url}}" class="mainlink">
+      <img src="{{MEDIA_URL}}{{recipe.image}}"
+           width="200" height="150"
+           class="img-polaroid"
+           /><br />
+      <strong class="lead">{{recipe.name}}</strong> ({{recipe.nutritionlabel.kcal|floatformat:"0"}} kcal)<br />
+      von {{recipe.user.get_full_name}}
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/static/foodplanner/main.css" >
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/bootstrap/css/bootstrap.min.css">
+
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <div class="nav-collapse collapse">
+            <a class="brand" href="/">FoodPlanner</a>
+            <ul class="nav">
+              <li{% if page_recipelist %} class="active"{% endif %}><a href="{% url recipe-list %}">Rezepte</a></li>
+              <li{% if page_ingredientlist %} class="active"{% endif %}><a href="{% url ingredient-list %}">Zutaten</a></li>
+              <li><a href="{% url recipe-random %}">Zufallsrezept</a></li>
+              {% if user.is_authenticated %}
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Mehr <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="{% url recipe-create %}">Neues Rezept</a></li>
+                  <li><a href="{% url ingredient-create %}">Neue Zutat</a></li>
+                  {% if user.is_staff %}
+                  <li><a href="/admin/">Admin</a></li>
+                  {% endif %}
+                  <li><a href="{% url auth-logout %}">{{user}} ausloggen</a></li>
+                </ul>
+              </li>
+              {% else %}
+              <li><a href="{% url auth-login %}?next={{request.get_full_path}}">Log in</a></li>
+              {% endif %}
+              <!--<li><a href="/admin/">Admin</a></li>-->
+            </ul>
+          </div>
+          <form class="navbar-search pull-right"
+                action="{% url recipe-list %}" method="get">
+            <input type="text" class="search-query" placeholder="Suchen"
+                   name="q">
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container">
+      <article>
+        {% block content %}
+        {% endblock %}
+      </article>
+      <hr></hr>
+      <footer>
+        <p>FoodPlanner © 2013 by <a href="http://www.jorgenschaefer.de/">Jorgen Schäfer</a></p>
+      </footer>
+    </div>
+    <script src="/static/jquery.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+{% block endscript %}{% endblock %}
+  </body>
+</html>

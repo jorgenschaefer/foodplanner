@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load percentage %}
+
+{% block title %}Rezept: {{recipe.name}}{% endblock %}
+
+{% block endscript %}
+{% if recipe.user == user %}
+<link rel="stylesheet" href="/static/jquery-ui/themes/base/jquery-ui.css" />
+<script type="text/javascript" src="/static/jquery-ui/ui/jquery-ui.js"></script>
+<script type="text/javascript" src="/static/foodplanner/recipe-detail.js"></script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<h1>{{recipe.name}}</h1>
+
+{% if recipe.image %}
+<img src="{{MEDIA_URL}}{{recipe.image}}"
+     width="200" height="150"
+     class="thumbnail img-polaroid"
+     />
+{% endif %}
+{% with recipe.nutritionlabel as label %}
+<table class="nutritionlabel table-hover">
+  <tbody>
+    <tr>
+      <th>Gewicht:</th>
+      <td class="numeric">{{label.grams|floatformat:1}}
+      <td>g</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>Energie:</th>
+      <td class="numeric {{label.kcal_level}}">{{label.kcal|floatformat:1}}</td>
+      <td class="{{label.kcal_level}}">kcal</td>
+      <td class="{{label.kcal_level}}">({{label.kcal_percent|percentage}})</td>
+    </tr>
+    <tr>
+      <th>Proteine:</th>
+      <td class="numeric {{label.protein_level}}">
+        {{label.protein|floatformat:1}}
+      </td>
+      <td class="{{label.protein_level}}">g</td>
+      <td class="{{label.protein_level}}">
+        ({{label.protein_percent|percentage}})
+      </td>
+    </tr>
+    <tr>
+      <th>Kohlenhydrate:</th>
+      <td class="numeric {{label.carb_level}}">
+        {{label.carb|floatformat:1}}
+      </td>
+      <td class="{{label.carb_level}}">g</td>
+      <td class="{{label.carb_level}}">
+        ({{label.carb_percent|percentage}})
+      </td>
+    </tr>
+    <tr>
+      <th>Fett:</th>
+      <td class="numeric {{label.fat_level}}">
+        {{label.fat|floatformat:1}}
+      </td>
+      <td class="{{label.fat_level}}">g</td>
+      <td class="{{label.fat_level}}">
+        ({{label.fat_percent|percentage}})
+      </td>
+    </tr>
+    <tr>
+      <th>Ballaststoffe:</th>
+      <td class="numeric {{label.fiber_level}}">
+        {{label.fiber|floatformat:1}}
+      </td>
+      <td class="{{label.fiber_level}}">g</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+{% endwith %}
+
+<div class="ingredientblock">
+<h2 style="clear: both">Zutaten</h2>
+
+<table class="table-hover">
+  <tbody{% if recipe.user == user %} id="sortable" data-csrf-token="{{csrf_token}}"{% endif %}>
+    {% for portion in recipe.portion_set.all %}
+    <tr class="{% if recipe.user == user %} delete-button-container{% endif %}"
+        data-portionpk="{{portion.pk}}">
+      <td class="numeric">{{portion.amount|floatformat}}</td>
+      <td>{{portion.portionsize.name}}</td>
+      <td>{{portion.portionsize.ingredient.name}}</td>
+      {% if recipe.user == user %}
+      <td class="numeric" style="padding-left: 1em"><small>({{portion.kcal}} kcal)</small></td>
+      <td>
+        <form method="post" action="{% url portion-delete pk=portion.pk %}"
+              style="display: inline">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-link btn-mini delete-button">
+            <b class="icon-remove-circle"></b>
+          </button>
+        </form>
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if recipe.user == user %}
+<form method="post" action="{% url portion-add recipe_id=object.pk %}"
+      class="addform">{% csrf_token %}
+  <input type="number" name="amount" min="0" class="input-mini">
+  <select name="portionsize" id="select-portionsize" class="input-small"
+          disabled="disabled">
+  </select>
+  <input type="text" name="ingredient" id="ingredient-input">
+  <input type="submit" value="Hinzufügen" class="btn">
+</form>
+{% endif %}
+
+</div>
+
+<h2>Zubereitung</h2>
+
+<div class="instructions">
+{{recipe.instructions|linebreaks}}
+</div>
+
+{% if recipe.user == user %}
+<form method="get" action="{% url recipe-edit pk=recipe.id %}">
+  <input type="submit" value="Rezept Bearbeiten" class="btn" />
+</form>
+{% endif %}
+
+{% endblock %}

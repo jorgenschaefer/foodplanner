@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if object.pk %}
+Zutat Editieren
+{% else %}
+Neue Zutat erstellen
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<h1>Zutat</h1>
+
+<form action="" method="post">{% csrf_token %}
+  <table>
+    {{ form.as_table }}
+  </table>
+  <input type="submit" value="Speichern" class="btn" />
+</form>
+
+{% if object.pk %}
+<ul>
+  {% for portionsize in object.portionsize_set.all %}
+  <li class="delete-button-container">
+    <form action="{% url portionsize-delete pk=object.id portionsize_id=portionsize.id %}"
+          method="post"
+          style="display: inline">
+      {% csrf_token %}
+      1 {{portionsize.name}} = {{portionsize.grams}} {{object.baseunit}}
+      <button type="submit" class="btn btn-link btn-mini delete-button"><b class="icon-remove-circle"></b></button>
+    </form>
+  </li>
+  {% endfor %}
+  <li>
+    <form action="{% url portionsize-create pk=object.id %}"
+          method="post">
+      {% csrf_token %}
+      1 <input type="text" name="name" style="width: 10em" />
+      = <input type="text" name="grams" style="width: 2em" />
+      {{object.baseunit}}
+      <input type="submit" value="Hinzufügen" class="btn" />
+    </form>
+  </li>
+</ul>
+
+<hr />
+<form action="{% url ingredient-delete pk=object.id %}" method="get">
+  <input type="submit" value="Löschen" class="btn" />
+</form>
+
+{% endif %}
+{% endblock %}

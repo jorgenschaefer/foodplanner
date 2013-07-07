@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Rezept Editieren{% endblock %}
+
+{% block content %}
+{% if object.pk %}
+<h1>{{object.name}}</h1>
+{% else %}
+<h1>Neues Rezept</h1>
+{% endif %}
+
+<form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+  {{ form.as_p }}
+{% if object.pk %}
+  <input type="submit" value="Änderungen speichern" class="btn" />
+{% else %}
+  <input type="submit" value="Rezept erstellen" class="btn" />
+{% endif %}
+</form>
+
+{% if object.pk %}
+<hr />
+<form action="{% url recipe-delete pk=object.id %}" method="get">
+  <input type="submit" value="Rezept löschen" class="btn" />
+</form>
+{% endif %}
+{% endblock %}

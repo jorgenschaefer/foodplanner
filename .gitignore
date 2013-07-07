@@ -1,0 +1,4 @@
+*.pyc
+settings_*
+testdata.json
+.ropeproject

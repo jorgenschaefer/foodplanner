@@ -1,0 +1,70 @@
+body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+.good {
+    color: #0a0;
+    font-weight: bold;
+}
+
+.low {
+    color: #eb0;
+    font-weight: bold;
+}
+
+.high {
+    color: #d00;
+    font-weight: bold;
+}
+
+.numeric, .table td.numeric {
+    text-align: right;
+}
+
+tbody th {
+    text-align: left;
+}
+
+img.thumbnail {
+    float: left;
+    margin: 0 1em 0.5em 0;
+}
+
+a.mainlink, a.mainlink:hover, a.mainlink:active, a.mainlink:visited {
+    color: black;
+    text-decoration: none;
+}
+
+.instructions {
+    width: 66ex;
+}
+
+.form-signin {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+table.nutritionlabel tbody th {
+    padding-right: 1em;
+}
+
+.ui-autocomplete {
+  max-height: 9em;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.ui-autocomplete-loading {
+  background: white url('/static/jquery-ui/themes/base/images/ui-anim_basic_16x16.gif') right center no-repeat;
+}
+
+.delete-button-container .delete-button {
+    display: none;
+    line-height: 1.2em;
+}
+
+.delete-button-container:hover .delete-button {
+    display: inline;
+    padding: 0 1em;
+}

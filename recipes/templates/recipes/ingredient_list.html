@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load percentage %}
+
+{% block title %}Zutaten{% endblock %}
+
+{% block content %}
+<h1>Zutaten</h1>
+
+<table class="table table-bordered table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Zutat</th>
+      <th>kcal/100g</th>
+      <th>Proteine/100g</th>
+      <th>Kohlenhydrate/100g</th>
+      <th>Fett/100g</th>
+      <th>Ballaststoffe/100g</th>
+      <th>Flüssigkeit?</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ingredient in object_list %}
+    <tr>
+      <th>
+        {% if user.is_authenticated and ingredient.user == user %}
+        <a href="{{ingredient.get_absolute_url}}">
+          {{ingredient.name}}
+        </a>
+        {% else %}
+          {{ingredient.name}}
+        {% endif %}
+      </th>
+      <td class="numeric">
+        {{ingredient.kcal|floatformat:"1"}}
+      </td>
+      <td class="numeric">
+        {{ingredient.protein|floatformat:"1"}}
+      </td>
+      <td class="numeric">
+        {{ingredient.carb|floatformat:"1"}}
+      </td>
+      <td class="numeric">
+        {{ingredient.fat|floatformat:"1"}}
+      </td>
+      <td class="numeric">
+        {{ingredient.fiber|floatformat:"1"}}
+      </td>
+      <td>
+        {% if ingredient.isfluid %}
+        Ja
+        {% else %}
+        Nein
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if is_paginated %}
+<div class="pagination">
+  <ul>
+
+    <li{% if not page_obj.has_previous %} class="disabled"{% endif %}><a href="?page={{ page_obj.previous_page_number }}{% if query %}&amp;q={{query|urlencode}}{% endif %}">«</a></li>
+    {% for page in page_obj.paginator.page_range %}
+    <li{% if page_obj.number == page %} class="disabled"{% endif %}><a href="?page={{ page }}{% if query %}&amp;q={{query|urlencode}}{% endif %}">{{page}}</a></li>
+    {% endfor %}
+    <li{% if not page_obj.has_next %} class="disabled"{% endif %}><a href="?page={{ page_obj.next_page_number }}{% if query %}&amp;q={{query|urlencode}}{% endif %}">»</a></li>
+  </span>
+</div>
+{% endif %}
+
+{% if user.is_authenticated %}
+<form action="{% url ingredient-create %}" method="get">
+  <input type="submit" value="Neue Zutat" class="btn" />
+</form>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load percentage %}
+
+{% block title %}Zutat: {{ingredient.name}}{% endblock %}
+
+{% block content %}
+<h1>{{ingredient.name}}</h1>
+
+<table>
+  <tbody>
+    <tr><td class="numeric">{{ingredient.kcal}}</td><th>kcal/100g</th></tr>
+    <tr><td class="numeric">{{ingredient.protein|floatformat:1}}</td><th>Proteine/100g</th></tr>
+    <tr><td class="numeric">{{ingredient.carb|floatformat:1}}</td><th>Kohlenhydrate/100g</th></tr>
+    <tr><td class="numeric">{{ingredient.fat|floatformat:1}}</td><th>Fett/100g</th></tr>
+    <tr><td class="numeric">{{ingredient.fiber|floatformat:1}}</td><th>Ballaststoffe/100g</th></tr>
+    <tr><td>{% if ingredient.isfluid %}Eine{% else %}Keine{% endif %}</td><th>Flüssigkeit</th></tr>
+  </tbody>
+</table>
+
+<ul>
+  {% for portionsize in ingredient.portionsize_set.all %}
+  <li>1 {{portionsize.name}} {{ingredient}} = {{portionsize.grams|floatformat}} g {{ingredient}}</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

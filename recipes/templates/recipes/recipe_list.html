@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load percentage %}
+
+{% block title %}Rezepte{% endblock %}
+
+{% block content %}
+<h1>Rezepte</h1>
+
+<table class="table table-bordered table-striped table-hover">
+  <thead>
+    <tr>
+      <th>Rezept</th>
+      <th>kcal</th>
+      <th>Proteine</th>
+      <th>Kohlenhydrate</th>
+      <th>Fett</th>
+      <th>Ballaststoffe</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for recipe in object_list %}
+    <tr>
+      <th>
+        <a href="{% url recipe-detail pk=recipe.id %}">
+        {{recipe.name}}
+        </a>
+      </th>
+      {% with recipe.nutritionlabel as label %}
+      <td class="numeric {{label.kcal_level}}">
+        {{label.kcal|floatformat:"0"}}
+        ({{label.kcal_percent|percentage}})
+      </td>
+      <td class="numeric {{label.protein_level}}">
+        {{label.protein|floatformat:"1"}} g
+        ({{label.protein_percent|percentage}})
+      </td>
+      <td class="numeric {{label.carb_level}}">
+        {{label.carb|floatformat:"1"}} g
+        ({{label.carb_percent|percentage}})
+      </td>
+      <td class="numeric {{label.fat_level}}">
+        {{label.fat|floatformat:"1"}} g
+        ({{label.fat_percent|percentage}})
+      </td>
+      <td class="numeric {{label.fiber_level}}">
+        {{label.fiber|floatformat:"1"}} g
+      </td>
+      {% endwith %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if is_paginated %}
+<div class="pagination">
+  <ul>
+
+    <li{% if not page_obj.has_previous %} class="disabled"{% endif %}><a href="?page={{ page_obj.previous_page_number }}{% if query %}&amp;q={{query|urlencode}}{% endif %}">«</a></li>
+    {% for page in page_obj.paginator.page_range %}
+    <li{% if page_obj.number == page %} class="disabled"{% endif %}><a href="?page={{ page }}{% if query %}&amp;q={{query|urlencode}}{% endif %}">{{page}}</a></li>
+    {% endfor %}
+    <li{% if not page_obj.has_next %} class="disabled"{% endif %}><a href="?page={{ page_obj.next_page_number }}{% if query %}&amp;q={{query|urlencode}}{% endif %}">»</a></li>
+  </span>
+</div>
+{% endif %}
+
+{% if user.is_authenticated %}
+<form method="get" action="{% url recipe-create %}">
+  <input type="submit" value="Neues Rezept erstellen" class="btn" />
+</form>
+{% endif %}
+
+{% endblock %}

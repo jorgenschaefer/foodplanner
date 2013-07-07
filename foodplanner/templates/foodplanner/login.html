@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Login to FoodPlanner{% endblock %}
+
+{% block content %}
+<form class="form-signin" action="" method="post">
+  {% csrf_token %}
+  <h2 class="form-signin-heading">Login</h2>
+  <input type="text" class="input-block-level" placeholder="Benutzername"
+         name="username">
+  <input type="password" class="input-block-level" placeholder="Passwort"
+         name="password">
+  <button class="btn btn-large btn-primary" type="submit">Anmelden</button>
+  <input type="hidden" name="next" value="{{next}}" />
+</form>
+{% endblock %}
