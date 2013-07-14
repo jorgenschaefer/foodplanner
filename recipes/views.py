@@ -146,12 +146,23 @@ class PortionsizeCreateView(LoginRequiredMixin, generic.View):
                                             kwargs={'pk': pk}))
 
 
-class PortionsizeDeleteView(LoginRequiredMixin, generic.View):
-    def post(self, request, pk, portionsize_id):
-        portionsize = get_object_or_404(PortionSize, pk=portionsize_id)
-        portionsize.delete()
-        return HttpResponseRedirect(reverse('ingredient-edit',
-                                            kwargs={'pk': pk}))
+class PortionsizeDeleteView(LoginRequiredMixin, edit.DeleteView):
+    model = PortionSize
+
+    def get_success_url(self):
+        return reverse('ingredient-edit',
+                       kwargs={'pk': self.object.ingredient.pk})
+
+    def get_object(self, *args, **kwargs):
+        obj = super(PortionsizeDeleteView, self).get_object(*args, **kwargs)
+        if obj.ingredient.user != self.request.user:
+            raise PermissionDenied()
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super(PortionsizeDeleteView, self).get_context_data(**kwargs)
+        context['page_recipelist'] = True
+        return context
 
 
 class PortionsizeAjaxView(LoginRequiredMixin, AjaxMixin, generic.View):

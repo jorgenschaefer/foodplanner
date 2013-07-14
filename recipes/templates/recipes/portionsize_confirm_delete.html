@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Portionsgröße löschen?{% endblock %}
+
+{% block content %}
+<form action="" method="post">{% csrf_token %}
+    <p>Willst du wirklich die Portionsgröße »{{ object }}« löschen?</p>
+    {% if object.portion_set.count > 0 %}
+    <p>Die folgenden Rezepte benutzen diese Portionsgröße noch:</p>
+    <ul>
+    {% for portion in object.portion_set.all %}
+    <li>
+      <a href="{% url recipe-detail pk=portion.recipe.id %}">
+        {{portion.recipe}}
+      </a>
+    </li>
+    {% endfor %}
+    <input type="submit" value="Trotzdem löschen" />
+    {% else %}
+    <input type="submit" value="Wirklich löschen" />
+    {% endif %}
+
+</form>
+{% endblock %}

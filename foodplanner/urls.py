@@ -46,8 +46,8 @@ urlpatterns = patterns(
     url(r'^ingredient/(?P<pk>[0-9]+)/addportionsize/$',
         PortionsizeCreateView.as_view(),
         name='portionsize-create'),
-    url(r'^ingredient/(?P<pk>[0-9]+)/'
-        r'deleteportionsize/(?P<portionsize_id>[0-9]+)/$',
+    url(r'^ingredient/(?P<ingredient_id>[0-9]+)/'
+        r'deleteportionsize/(?P<pk>[0-9]+)/$',
         PortionsizeDeleteView.as_view(),
         name='portionsize-delete'),
     url(r'^ingredient/portionsize/ajax/$',

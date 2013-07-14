@@ -4,7 +4,7 @@
 
 {% block content %}
 <form action="" method="post">{% csrf_token %}
-    <p>Willst du wirklich das Rezept “{{ object }}” löschen?</p>
+    <p>Willst du wirklich das Rezept »{{ object }}« löschen?</p>
     <input type="submit" value="Bestätigen" />
 </form>
 {% endblock %}
