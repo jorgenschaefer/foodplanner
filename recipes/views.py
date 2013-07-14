@@ -291,9 +291,17 @@ class PortionAddView(LoginRequiredMixin, generic.View):
                 pk=request.POST['portionsize'])
         except PortionSize.DoesNotExist:
             return destination
+
+        if recipe.portion_set.count() > 0:
+            order = (max(p.order for p in recipe.portion_set.all()) +
+                     1)
+        else:
+            order = 0
+
         Portion.objects.create(
             recipe=recipe,
             portionsize=portionsize,
+            order=order,
             amount=request.POST['amount'])
         return destination
 
