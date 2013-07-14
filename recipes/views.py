@@ -321,6 +321,21 @@ class PortionAddView(LoginRequiredMixin, generic.View):
         return destination
 
 
+class PortionSetAmount(LoginRequiredMixin, generic.View):
+    def post(self, request, pk):
+        portion = get_object_or_404(Portion, pk=pk)
+        if portion.recipe.user != request.user:
+            raise PermissionDenied()
+        try:
+            portion.amount = float(request.POST.get("value").replace(",", "."))
+        except ValueError:
+            pass
+        else:
+            portion.save()
+        return HttpResponseRedirect(reverse('recipe-detail',
+                                            kwargs={'pk': portion.recipe.id}))
+
+
 class PortionReorderAjaxView(LoginRequiredMixin, AjaxMixin, generic.View):
     def ajax(self, request):
         recipe = None

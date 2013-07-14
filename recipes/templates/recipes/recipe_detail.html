@@ -88,7 +88,11 @@
 {% if recipe.user == user %}
       <td class="move-button">⇳</td>
 {% endif %}
-      <td class="numeric">{{portion.amount|floatformat}}</td>
+      <td class="numeric click-to-edit"
+          data-url="{% url portion-set-amount pk=portion.id %}"
+          data-csrf="{{csrf_token}}">
+        {{portion.amount|floatformat}}
+      </td>
       <td>{{portion.portionsize.name}}</td>
       <td>{{portion.portionsize.ingredient.name}}</td>
       {% if recipe.user == user %}

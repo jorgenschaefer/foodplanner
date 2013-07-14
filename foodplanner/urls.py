@@ -14,7 +14,7 @@ from recipes.views import IngredientCreateView, IngredientDeleteView
 from recipes.views import IngredientAjaxView, PortionsizeAjaxView
 from recipes.views import PortionsizeCreateView, PortionsizeDeleteView
 from recipes.views import PortionAddView, PortionDeleteView
-from recipes.views import PortionReorderAjaxView
+from recipes.views import PortionSetAmount, PortionReorderAjaxView
 
 
 urlpatterns = patterns(
@@ -73,6 +73,8 @@ urlpatterns = patterns(
         name='portion-add'),
     url(r'^portion/reorder/$', PortionReorderAjaxView.as_view(),
         name='portion-add'),
+    url(r'^portion/(?P<pk>[0-9]+)/setamount/$', PortionSetAmount.as_view(),
+        name='portion-set-amount'),
 
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
