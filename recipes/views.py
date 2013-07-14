@@ -176,6 +176,35 @@ class PortionsizeAjaxView(LoginRequiredMixin, AjaxMixin, generic.View):
         ]
 
 
+class PortionsizeSetAmountView(LoginRequiredMixin, generic.View):
+    def post(self, request, pk):
+        portionsize = get_object_or_404(PortionSize, pk=pk)
+        if portionsize.ingredient.user != request.user:
+            raise PermissionDenied()
+        try:
+            portionsize.grams = float(request.POST.get("value")
+                                      .replace(",", "."))
+        except ValueError:
+            pass
+        else:
+            portionsize.save()
+        return HttpResponseRedirect(
+            reverse('ingredient-edit',
+                    kwargs={'pk': portionsize.ingredient.id}))
+
+
+class PortionsizeSetNameView(LoginRequiredMixin, generic.View):
+    def post(self, request, pk):
+        portionsize = get_object_or_404(PortionSize, pk=pk)
+        if portionsize.ingredient.user != request.user:
+            raise PermissionDenied()
+        portionsize.name = request.POST.get("value")
+        portionsize.save()
+        return HttpResponseRedirect(
+            reverse('ingredient-edit',
+                    kwargs={'pk': portionsize.ingredient.id}))
+
+
 ##################################################################
 # Recipe views
 
@@ -321,7 +350,7 @@ class PortionAddView(LoginRequiredMixin, generic.View):
         return destination
 
 
-class PortionSetAmount(LoginRequiredMixin, generic.View):
+class PortionSetAmountView(LoginRequiredMixin, generic.View):
     def post(self, request, pk):
         portion = get_object_or_404(Portion, pk=pk)
         if portion.recipe.user != request.user:

@@ -8,6 +8,10 @@ Neue Zutat erstellen
 {% endif %}
 {% endblock %}
 
+{% block endscript %}
+<script type="text/javascript" src="/static/foodplanner/click-to-edit.js"></script>
+{% endblock %}
+
 {% block content %}
 <h1>Zutat</h1>
 
@@ -22,10 +26,21 @@ Neue Zutat erstellen
 <ul>
   {% for portionsize in object.portionsize_set.all %}
   <li class="delete-button-container">
+    1
+    <span class="click-to-edit"
+          data-url="{% url portionsize-set-name pk=portionsize.id %}"
+          data-csrf="{{csrf_token}}">
+      {{portionsize.name}}
+    </span>
+    =
+    <span class="click-to-edit"
+          data-url="{% url portionsize-set-amount pk=portionsize.id %}"
+          data-csrf="{{csrf_token}}">
+      {{portionsize.grams}}
+    </span> g
     <form action="{% url portionsize-delete ingredient_id=object.id pk=portionsize.id %}"
           method="get"
           style="display: inline">
-      1 {{portionsize.name}} = {{portionsize.grams}} g
       <button type="submit" class="btn btn-link btn-mini delete-button"><b class="icon-remove-circle"></b></button>
     </form>
   </li>

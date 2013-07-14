@@ -31,7 +31,7 @@ def create_gram_portionsize(sender, instance, created, raw, **kwargs):
     if created and not raw:
         PortionSize.objects.create(
             ingredient=instance,
-            name="ml" if instance.isfluid else "g",
+            name="g",
             grams=1)
 
 signals.post_save.connect(create_gram_portionsize,
