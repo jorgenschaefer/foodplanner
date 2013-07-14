@@ -62,8 +62,8 @@ def recipe_image_filename(instance, filename):
 
 class Recipe(models.Model):
     user = models.ForeignKey(User)
-    created = models.DateTimeField(auto_now_add=True, null=True)
-    updated = models.DateTimeField(auto_now=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=128, unique=True)
     instructions = models.TextField()
     image = models.ImageField(upload_to=recipe_image_filename,

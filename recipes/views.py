@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
@@ -89,7 +89,9 @@ class IngredientEditView(LoginRequiredMixin, edit.UpdateView):
 
 class IngredientDeleteView(LoginRequiredMixin, edit.DeleteView):
     model = Ingredient
-    success_url = reverse_lazy('ingredient-list')
+
+    def get_success_url(self):
+        return reverse('ingredient-list')
 
     def get_object(self, *args, **kwargs):
         obj = super(IngredientDeleteView, self).get_object(*args, **kwargs)
@@ -238,7 +240,9 @@ class RecipeDetailView(generic.DetailView):
 
 class RecipeDeleteView(LoginRequiredMixin, edit.DeleteView):
     model = Recipe
-    success_url = reverse_lazy('recipe-list')
+
+    def get_success_url(self):
+        return reverse('recipe-list')
 
     def get_object(self, *args, **kwargs):
         obj = super(RecipeDeleteView, self).get_object(*args, **kwargs)
