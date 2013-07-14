@@ -14,7 +14,11 @@ class MainView(generic.TemplateView):
 
     def get_context_data(self):
         context = super(MainView, self).get_context_data()
-        qs = Recipe.objects.exclude(image=None).order_by("?")[:3]
+        qs = Recipe.objects.exclude(
+            image=None
+        ).exclude(
+            image=""
+        ).order_by("?")[:3]
         context['recipe_list'] = qs
         return context
 

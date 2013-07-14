@@ -26,7 +26,7 @@ Neue Zutat erstellen
           method="post"
           style="display: inline">
       {% csrf_token %}
-      1 {{portionsize.name}} = {{portionsize.grams}} {{object.baseunit}}
+      1 {{portionsize.name}} = {{portionsize.grams}} g
       <button type="submit" class="btn btn-link btn-mini delete-button"><b class="icon-remove-circle"></b></button>
     </form>
   </li>
@@ -37,7 +37,7 @@ Neue Zutat erstellen
       {% csrf_token %}
       1 <input type="text" name="name" style="width: 10em" />
       = <input type="text" name="grams" style="width: 2em" />
-      {{object.baseunit}}
+      g
       <input type="submit" value="Hinzufügen" class="btn" />
     </form>
   </li>

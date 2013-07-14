@@ -16,7 +16,6 @@ class Ingredient(models.Model):
     carb = models.FloatField('Carb/100g')
     fat = models.FloatField('Fat/100g')
     fiber = models.FloatField('Fiber/100g')
-    isfluid = models.BooleanField("A fluid?", default=False)
 
     class Meta:
         ordering = ["name"]
@@ -26,13 +25,6 @@ class Ingredient(models.Model):
 
     def get_absolute_url(self):
         return reverse('ingredient-edit', kwargs={'pk': self.id})
-
-    @property
-    def baseunit(self):
-        if self.isfluid:
-            return "ml"
-        else:
-            return "g"
 
 
 def create_gram_portionsize(sender, instance, created, raw, **kwargs):
@@ -98,10 +90,11 @@ class Portion(models.Model):
     portionsize = models.ForeignKey(PortionSize)
     order = models.IntegerField()
 
+    def grams(self):
+        return self.amount * self.portionsize.grams
+
     def kcal(self):
-        return (self.amount *
-                self.portionsize.grams *
-                self.portionsize.ingredient.kcal) / 100
+        return (self.grams() * self.portionsize.ingredient.kcal) / 100
 
     def __unicode__(self):
         return u"{} {}".format(
