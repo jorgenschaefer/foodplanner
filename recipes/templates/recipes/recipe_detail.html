@@ -96,8 +96,8 @@
       </td>
       <td>{{portion.portionsize.name}}</td>
       <td>{{portion.portionsize.ingredient.name}}</td>
-      {% if recipe.user == user %}
       <td style="padding-left: 1em"><small>({{portion.grams|floatformat:0}} g, {{portion.kcal|floatformat:0}} kcal)</small></td>
+      {% if recipe.user == user %}
       <td>
         <form method="post" action="{% url portion-delete pk=portion.pk %}"
               style="display: inline">
