@@ -68,3 +68,11 @@ table.nutritionlabel tbody th {
     display: inline;
     padding: 0 1em;
 }
+
+.move-button {
+    visibility: hidden;
+}
+
+.move-button-container:hover .move-button {
+    visibility: visible;
+}

@@ -80,11 +80,14 @@
 <div class="ingredientblock">
 <h2 style="clear: both">Zutaten</h2>
 
-<table class="table-hover">
+<table class="table-hover ingredient-table">
   <tbody{% if recipe.user == user %} id="sortable" data-csrf-token="{{csrf_token}}"{% endif %}>
     {% for portion in recipe.portion_set.all %}
-    <tr class="{% if recipe.user == user %} delete-button-container{% endif %}"
+    <tr class="{% if recipe.user == user %} delete-button-container move-button-container{% endif %}"
         data-portionpk="{{portion.pk}}">
+{% if recipe.user == user %}
+      <td class="move-button">⇳</td>
+{% endif %}
       <td class="numeric">{{portion.amount|floatformat}}</td>
       <td>{{portion.portionsize.name}}</td>
       <td>{{portion.portionsize.ingredient.name}}</td>

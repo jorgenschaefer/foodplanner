@@ -24,6 +24,7 @@ $(function () {
 
 
     $("#sortable").sortable({
+        handle: ".move-button",
         update: function(event, ui) {
             var neworder = []
             $(this).children().each(function () {
@@ -34,6 +35,5 @@ $(function () {
                     'neworder': JSON.stringify(neworder)});
         }
     });
-    $("#sortable").disableSelection();
-    $("#sortable").css("cursor", "move");
+    $(".move-button").css("cursor", "move");
 });
