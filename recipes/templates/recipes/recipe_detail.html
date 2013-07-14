@@ -108,11 +108,11 @@
 {% if recipe.user == user %}
 <form method="post" action="{% url portion-add recipe_id=object.pk %}"
       class="addform">{% csrf_token %}
+  <input type="text" name="ingredient" id="ingredient-input">
   <input type="number" name="amount" min="0" class="input-mini">
   <select name="portionsize" id="select-portionsize" class="input-small"
           disabled="disabled">
   </select>
-  <input type="text" name="ingredient" id="ingredient-input">
   <input type="submit" value="Hinzufügen" class="btn">
 </form>
 {% endif %}
