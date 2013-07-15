@@ -90,7 +90,8 @@
       <td class="move-button">⇳</td>
 {% endif %}
       <td class="numeric click-to-edit"
-          data-url="{% url portion-set-amount pk=portion.id %}"
+          data-url="{% url portion-put pk=portion.id %}"
+          data-attribute="amount"
           data-csrf="{{csrf_token}}">
         {{portion.amount|floatformat}}
       </td>

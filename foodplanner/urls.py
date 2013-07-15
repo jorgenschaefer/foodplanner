@@ -4,18 +4,7 @@ from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
-from recipes.views import MainView
-from recipes.views import RecipeListView, RecipeDetailView
-from recipes.views import RecipeUpdateView, RecipeDeleteView
-from recipes.views import RecipeCreateView
-from recipes.views import RandomRecipeView
-from recipes.views import IngredientListView, IngredientEditView
-from recipes.views import IngredientCreateView, IngredientDeleteView
-from recipes.views import IngredientAjaxView, PortionsizeAjaxView
-from recipes.views import PortionsizeCreateView, PortionsizeDeleteView
-from recipes.views import PortionsizeSetAmountView, PortionsizeSetNameView
-from recipes.views import PortionAddView, PortionDeleteView
-from recipes.views import PortionSetAmountView, PortionReorderAjaxView
+from recipes import views
 
 
 urlpatterns = patterns(
@@ -30,58 +19,59 @@ urlpatterns = patterns(
         {'next_page': '/'},
         name='auth-logout'),
 
-    url(r'^$', MainView.as_view(),
+    url(r'^$', views.MainView.as_view(),
         name='main'),
 
-    url(r'^ingredients/$', IngredientListView.as_view(),
+    url(r'^ingredients/$', views.IngredientListView.as_view(),
         name='ingredient-list'),
-    url(r'^ingredients/create/$', IngredientCreateView.as_view(),
+    url(r'^ingredients/create/$', views.IngredientCreateView.as_view(),
         name='ingredient-create'),
-    url(r'^ingredient/(?P<pk>[0-9]+)/edit/$', IngredientEditView.as_view(),
+    url(r'^ingredient/(?P<pk>[0-9]+)/edit/$',
+        views.IngredientEditView.as_view(),
         name='ingredient-edit'),
-    url(r'^ingredient/(?P<pk>[0-9]+)/delete/$', IngredientDeleteView.as_view(),
+    url(r'^ingredient/(?P<pk>[0-9]+)/delete/$',
+        views.IngredientDeleteView.as_view(),
         name='ingredient-delete'),
-    url(r'^ingredient/ajax/$', IngredientAjaxView.as_view(),
+    url(r'^api/ingredient/$', views.IngredientAjaxView.as_view(),
         name='ingredient-ajax'),
 
     url(r'^ingredient/(?P<pk>[0-9]+)/addportionsize/$',
-        PortionsizeCreateView.as_view(),
+        views.PortionsizeCreateView.as_view(),
         name='portionsize-create'),
     url(r'^ingredient/(?P<ingredient_id>[0-9]+)/'
         r'deleteportionsize/(?P<pk>[0-9]+)/$',
-        PortionsizeDeleteView.as_view(),
+        views.PortionsizeDeleteView.as_view(),
         name='portionsize-delete'),
-    url(r'^ingredient/portionsize/ajax/$',
-        PortionsizeAjaxView.as_view(),
+    url(r'^api/portionsize/$',
+        views.PortionsizeCollectionAjaxView.as_view(),
         name='portionsize-ajax'),
-    url(r'^ingredient/portionsize/(?P<pk>[0-9]+)/setamount/$',
-        PortionsizeSetAmountView.as_view(),
-        name='portionsize-set-amount'),
-    url(r'^ingredient/portionsize/(?P<pk>[0-9]+)/setname/$',
-        PortionsizeSetNameView.as_view(),
-        name='portionsize-set-name'),
+    url(r'^api/portionsize/(?P<pk>[0-9]+)/$',
+        views.PortionsizeAjaxView.as_view(),
+        name='portionsize-put'),
 
-    url(r'^recipes/$', RecipeListView.as_view(),
+    url(r'^recipes/$', views.RecipeListView.as_view(),
         name='recipe-list'),
-    url(r'^recipe/random/$', RandomRecipeView.as_view(),
+    url(r'^recipe/random/$', views.RandomRecipeView.as_view(),
         name='recipe-random'),
-    url(r'^recipe/create/$', RecipeCreateView.as_view(),
+    url(r'^recipe/create/$', views.RecipeCreateView.as_view(),
         name='recipe-create'),
-    url(r'^recipe/(?P<pk>[0-9]+)/$', RecipeDetailView.as_view(),
+    url(r'^recipe/(?P<pk>[0-9]+)/$', views.RecipeDetailView.as_view(),
         name='recipe-detail'),
-    url(r'^recipe/(?P<pk>[0-9]+)/edit/$', RecipeUpdateView.as_view(),
+    url(r'^recipe/(?P<pk>[0-9]+)/edit/$', views.RecipeUpdateView.as_view(),
         name='recipe-edit'),
-    url(r'^recipe/(?P<pk>[0-9]+)/delete/$', RecipeDeleteView.as_view(),
+    url(r'^recipe/(?P<pk>[0-9]+)/delete/$', views.RecipeDeleteView.as_view(),
         name='recipe-delete'),
 
-    url(r'^portion/(?P<pk>[0-9]+)/delete/$', PortionDeleteView.as_view(),
+    url(r'^portion/(?P<pk>[0-9]+)/delete/$', views.PortionDeleteView.as_view(),
         name='portion-delete'),
-    url(r'^portion/add/(?P<recipe_id>[0-9]+)/$', PortionAddView.as_view(),
+    url(r'^portion/add/(?P<recipe_id>[0-9]+)/$',
+        views.PortionAddView.as_view(),
         name='portion-add'),
-    url(r'^portion/reorder/$', PortionReorderAjaxView.as_view(),
+    url(r'^api/portion/reorder/$', views.PortionReorderAjaxView.as_view(),
         name='portion-add'),
-    url(r'^portion/(?P<pk>[0-9]+)/setamount/$', PortionSetAmountView.as_view(),
-        name='portion-set-amount'),
+    url(r'^api/portion/(?P<pk>[0-9]+)/$',
+        views.PortionAjaxView.as_view(),
+        name='portion-put'),
 
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),

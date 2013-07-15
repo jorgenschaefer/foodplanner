@@ -39,19 +39,25 @@ from django.http import HttpResponse
 
 
 class AjaxMixin(object):
-    def get(self, *args, **kwargs):
-        if self.request.is_ajax():
-            return HttpResponse(json.dumps(self.ajax(*args, **kwargs)),
-                                content_type='application/json')
+    def dispatch(self, request, *args, **kwargs):
+        if request.is_ajax():
+            if (
+                    "application/json" in request.META["CONTENT_TYPE"] and
+                    request.method in ("POST", "PUT")
+            ):
+                payload = json.load(request)
+                value = super(AjaxMixin, self).dispatch(request, payload,
+                                                        *args, **kwargs)
+            else:
+                value = super(AjaxMixin, self).dispatch(request,
+                                                        *args, **kwargs)
+            if isinstance(value, HttpResponse):
+                return value
+            else:
+                return HttpResponse(json.dumps(value),
+                                    content_type='application/json')
         else:
             return super(AjaxMixin, self).get(*args, **kwargs)
-
-    def post(self, *args, **kwargs):
-        if self.request.is_ajax():
-            return HttpResponse(json.dumps(self.ajax(*args, **kwargs)),
-                                content_type='application/json')
-        else:
-            return super(AjaxMixin, self).post(*args, **kwargs)
 
 
 ##################################################################
@@ -126,7 +132,7 @@ class IngredientCreateView(LoginRequiredMixin, edit.CreateView):
 
 
 class IngredientAjaxView(LoginRequiredMixin, AjaxMixin, generic.View):
-    def ajax(self, request):
+    def get(self, request):
         return [
             ingredient.name
             for ingredient
@@ -167,8 +173,9 @@ class PortionsizeDeleteView(LoginRequiredMixin, edit.DeleteView):
         return context
 
 
-class PortionsizeAjaxView(LoginRequiredMixin, AjaxMixin, generic.View):
-    def ajax(self, request):
+class PortionsizeCollectionAjaxView(LoginRequiredMixin, AjaxMixin,
+                                    generic.View):
+    def get(self, request):
         return [
             {'pk': portionsize.id,
              'label': portionsize.name}
@@ -178,21 +185,23 @@ class PortionsizeAjaxView(LoginRequiredMixin, AjaxMixin, generic.View):
         ]
 
 
-class PortionsizeSetAmountView(LoginRequiredMixin, generic.View):
-    def post(self, request, pk):
+class PortionsizeAjaxView(LoginRequiredMixin, AjaxMixin, generic.View):
+    def put(self, request, obj, pk):
         portionsize = get_object_or_404(PortionSize, pk=pk)
         if portionsize.ingredient.user != request.user:
             raise PermissionDenied()
-        try:
-            portionsize.grams = float(request.POST.get("value")
-                                      .replace(",", "."))
-        except ValueError:
-            pass
-        else:
-            portionsize.save()
-        return HttpResponseRedirect(
-            reverse('ingredient-edit',
-                    kwargs={'pk': portionsize.ingredient.id}))
+        if "name" in obj:
+            portionsize.name = obj["name"]
+        if "grams" in obj:
+            try:
+                portionsize.grams = float(obj["grams"].replace(",", "."))
+            except ValueError:
+                pass
+        portionsize.save()
+        return {"id": portionsize.id,
+                "ingradient": portionsize.ingredient.name,
+                "name": portionsize.name,
+                "grams": portionsize.grams}
 
 
 class PortionsizeSetNameView(LoginRequiredMixin, generic.View):
@@ -354,23 +363,23 @@ class PortionAddView(LoginRequiredMixin, generic.View):
         return destination
 
 
-class PortionSetAmountView(LoginRequiredMixin, generic.View):
-    def post(self, request, pk):
+class PortionAjaxView(LoginRequiredMixin, AjaxMixin, generic.View):
+    def put(self, request, obj, pk):
         portion = get_object_or_404(Portion, pk=pk)
         if portion.recipe.user != request.user:
             raise PermissionDenied()
         try:
-            portion.amount = float(request.POST.get("value").replace(",", "."))
+            portion.amount = float(obj["amount"].replace(",", "."))
         except ValueError:
             pass
         else:
             portion.save()
-        return HttpResponseRedirect(reverse('recipe-detail',
-                                            kwargs={'pk': portion.recipe.id}))
+        return {"id": portion.id,
+                "amount": portion.amount}
 
 
 class PortionReorderAjaxView(LoginRequiredMixin, AjaxMixin, generic.View):
-    def ajax(self, request):
+    def post(self, request):
         recipe = None
         new_order = json.loads(request.POST.get('neworder', '[]'))
         for i, pk in enumerate(new_order):

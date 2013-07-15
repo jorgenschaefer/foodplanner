@@ -13,13 +13,13 @@ $(function () {
     }
 
     $("#ingredient-input").autocomplete({
-        source: "/ingredient/ajax/",
+        source: "/api/ingredient/",
         minLength: 2,
         select: function (event, ui) {
             if (ui.item) {
                 $("#select-portionsize").attr('disabled', 'disabled');
-                $.getJSON("/ingredient/portionsize/ajax/?ingredient=" +
-                          ui.item.value,
+                $.getJSON("/api/portionsize/",
+                          {ingredient: ui.item.value},
                           setup_portionsize_select);
             }
         }
@@ -35,7 +35,7 @@ $(function () {
             $(this).children().each(function () {
                 neworder.push($(this).data('portionpk'));
             });
-            $.post("/portion/reorder/",
+            $.post("/api/portion/reorder/",
                    {'csrfmiddlewaretoken': $(this).data('csrf-token'),
                     'neworder': JSON.stringify(neworder)});
         }

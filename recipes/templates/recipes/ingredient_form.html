@@ -28,13 +28,15 @@ Neue Zutat erstellen
   <li class="delete-button-container">
     1
     <span class="click-to-edit"
-          data-url="{% url portionsize-set-name pk=portionsize.id %}"
+          data-url="{% url portionsize-put pk=portionsize.id %}"
+          data-attribute="name"
           data-csrf="{{csrf_token}}">
       {{portionsize.name}}
     </span>
     =
     <span class="click-to-edit"
-          data-url="{% url portionsize-set-amount pk=portionsize.id %}"
+          data-url="{% url portionsize-put pk=portionsize.id %}"
+          data-attribute="grams"
           data-csrf="{{csrf_token}}">
       {{portionsize.grams}}
     </span> g
