@@ -42,7 +42,8 @@ class AjaxMixin(object):
     def dispatch(self, request, *args, **kwargs):
         if request.is_ajax():
             if (
-                    "application/json" in request.META["CONTENT_TYPE"] and
+                    "application/json" in request.META.get("CONTENT_TYPE",
+                                                           "") and
                     request.method in ("POST", "PUT")
             ):
                 payload = json.load(request)
