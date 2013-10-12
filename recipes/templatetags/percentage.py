@@ -7,4 +7,4 @@ register = template.Library()
 @register.filter
 @stringfilter
 def percentage(value):
-    return "{:.1f}%".format(float(value) * 100)
+    return "{0:.1f}%".format(float(value) * 100)
